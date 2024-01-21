@@ -1,7 +1,9 @@
-import { Revenue } from '@/app/lib/definitions';
+import { fetchRevenue } from '@/app/lib/data';
 import { generateYAxis } from '@/app/lib/utils';
 import { lusitana } from '@/app/ui/fonts';
+import { RevenueChartSkeleton } from '@/app/ui/skeletons';
 import { CalendarIcon } from '@heroicons/react/24/outline';
+import { Suspense } from 'react';
 
 // This component is representational only.
 // For data visualization UI, check out:
@@ -9,11 +11,15 @@ import { CalendarIcon } from '@heroicons/react/24/outline';
 // https://www.chartjs.org/
 // https://airbnb.io/visx/
 
-export default async function RevenueChart({
-  revenue,
-}: {
-  revenue: Revenue[];
-}) {
+export default async function RevenueChart(
+) {
+  return (<Suspense fallback={<RevenueChartSkeleton />}>
+    <RevenueChartReal />
+  </Suspense>);
+}
+
+export async function RevenueChartReal() {
+  const revenue = await fetchRevenue();
   const chartHeight = 350;
   // NOTE: comment in this code when you get to this point in the course
 
@@ -24,6 +30,7 @@ export default async function RevenueChart({
   }
 
   return (
+
     <div className="w-full md:col-span-4">
       <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
         Recent Revenue

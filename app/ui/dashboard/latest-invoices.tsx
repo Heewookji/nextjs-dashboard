@@ -1,13 +1,16 @@
-import { LatestInvoice } from '@/app/lib/definitions';
+import { fetchLatestInvoices } from '@/app/lib/data';
 import { lusitana } from '@/app/ui/fonts';
+import { LatestInvoicesSkeleton } from '@/app/ui/skeletons';
 import { ArrowPathIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import Image from 'next/image';
-export default async function LatestInvoices({
-  latestInvoices,
-}: {
-  latestInvoices: LatestInvoice[];
-}) {
+import { Suspense } from 'react';
+
+export default async function LatestInvoices() {
+  return (<Suspense fallback={<LatestInvoicesSkeleton />}><LatestInvoicesReal /></Suspense>);
+}
+export async function LatestInvoicesReal() {
+  const latestInvoices = await fetchLatestInvoices();
   return (
     <div className="flex w-full flex-col md:col-span-4">
       <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
