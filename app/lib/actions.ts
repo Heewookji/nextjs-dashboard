@@ -1,7 +1,10 @@
 'use server';
 
 import { sql } from '@vercel/postgres';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import { z } from 'zod';
+
 
 const FormSchema = z.object({
   id: z.string(),
@@ -27,4 +30,9 @@ export async function createInvoice(formData: FormData) {
   INSERT INTO invoices (customer_id, amount, status, date)
   VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
   `;
+
+  // client side router cache를 초기화
+  revalidatePath('/dashboard/invoices');
+  // 다시 invoices로 돌아가기
+  redirect('/dashboard/invoices');
 }
